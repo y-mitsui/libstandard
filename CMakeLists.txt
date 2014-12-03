@@ -24,16 +24,18 @@ endmacro()
 cmake_minimum_required (VERSION 2.6)
 project (libstandard)
 
-EXEC_PROGRAM(gsl-config ARGS --libs OUTPUT_VARIABLE GSL_LIBS)
-EXEC_PROGRAM(gsl-config ARGS --cflags OUTPUT_VARIABLE GSL_CFLAGS)
-SET(CMAKE_C_FLAGS "-Wall -g ${GSL_CFLAGS}")
-ADD_LIBRARY(standard STATIC db.c)
+EXEC_PROGRAM(pkg-config ARGS --libs glib-2.0 OUTPUT_VARIABLE GLIB_LIBS)
+EXEC_PROGRAM(pkg-config ARGS --cflags glib-2.0 OUTPUT_VARIABLE GLIB_CFLAGS)
+EXEC_PROGRAM(pkg-config ARGS --libs apr-1 OUTPUT_VARIABLE APR_LIBS)
+EXEC_PROGRAM(pkg-config ARGS --cflags apr-1 OUTPUT_VARIABLE APR_CFLAGS)
+SET(CMAKE_C_FLAGS "-Wall -g ${GLIB_CFLAGS} ${APR_CFLAGS}")
+ADD_LIBRARY(standard STATIC db.c xpath.c file.c predict.c)
 
 INSTALL(TARGETS standard ARCHIVE DESTINATION lib)
 INSTALL(FILES libstandard.h DESTINATION include)
 
 add_executable (example example.c)
-target_link_libraries(example standard m -L/usr/local/lib  ${GSL_LIBS})
+target_link_libraries(example standard m -L/usr/local/lib  ${GLIB_LIBS} ${APR_LIBS})
 
 set(PNGLIB_NAME standard)
 
