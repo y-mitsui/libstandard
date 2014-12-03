@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libstandard
+Description: C liblary of variety
+Version: @PNGLIB_VERSION@
+Libs: @LIBS@
+Libs.private: @LIBS@
+Cflags: -I${includedir}
