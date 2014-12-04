@@ -26,6 +26,7 @@ typedef struct{
 	enum DTYPE type;
 	int numPattern;
 }var_info;
+double bestModel(double *sample,int numSample,int dimention,var_info *vars,DPGMM **bestModel);
 
 
 MYSQL *std_db_open(char *host,char *db,char *user,char *password);
