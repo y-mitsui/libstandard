@@ -33,6 +33,14 @@ void makeNewData(double *new,double *old,int limit,int *stack,var_info *vars){
 				}
 			}
 }
+int calcNewDimention(var_info *vars,int *stack,int limit){
+	int r=0,i;
+	r+=(vars[0].type==DTYPE_DISCRETE) ? vars[0].numPattern:1;
+	for(i=0;i<limit;i++){
+		r+=(vars[i].type==DTYPE_DISCRETE) ? vars[i].numPattern:1;
+	}
+	return r;
+}
 static void __subBestModel(double *sample,int numSample,int dimention,var_info *vars,int *stack,int limit,int rank,int start,double *max,DPGMM **bestCtx){
 	DPGMM *model;
 	int i,j;
@@ -40,7 +48,7 @@ static void __subBestModel(double *sample,int numSample,int dimention,var_info *
 	int testCase[100];
 	if(limit==rank){
 		model=dpgmm_init(limit,6);
-		newData=malloc(sizeof(double)*(limit+1));
+		newData=malloc(sizeof(double)*calcNewDimention(vars,stack,limit));
 		uniqRandum(testCase,100,numSample);
 		for(i=0;i<numSample;i++){
 			for(j=0;j<sizeof(testCase)/sizeof(testCase[0]);j++)
