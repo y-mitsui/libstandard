@@ -1,4 +1,4 @@
-
+#include "libstandard.h"
 GSList* query_xpath(htmlDocPtr doc,const char *query){
 	int i;
 	xmlXPathContextPtr ctx = xmlXPathNewContext(doc);

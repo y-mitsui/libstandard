@@ -15,22 +15,26 @@ MYSQL_RES* std_db_read(MYSQL *conn,const char *sql){
 	}
 	return mysql_store_result(conn);
 }
-/*
+dbData* std_db_data(enum DB_DATA_TYPE type,char *data){
+	dbData *r=malloc(sizeof(dbData));
+	r->type=type;
+	r->data=data;
+	return r;
+}
 my_ulonglong std_db_write(MYSQL *conn,const char *table,GHashTable *data){
 	GHashTableIter iter;
 	apr_pool_t *pool=NULL;
 	g_hash_table_iter_init(&iter,data);
-	int size=g_hash_table_size(data);
-	mydb *val;
-	char *key;
+	dbData *val;
+	char *key,*keys,*vals;
 
-	apr_pool_create(&pool);
+	apr_pool_create(&pool,NULL);
 	while(g_hash_table_iter_next(&iter,(gpointer*)(void*)&key,(gpointer*)(void*)&val)){
 		keys=apr_psprintf(pool,"%s `%s`,",keys,key);
-		if(mydb->type==D_TYPE_INT){
-			vals=apr_psprintf(pool,"%s,%s,",vals,val);
+		if(val->type==D_TYPE_INT){
+			vals=apr_psprintf(pool,"%s,%s,",vals,val->data);
 		}else{
-			vals=apr_psprintf(pool,"%s,'%s',",vals,val);
+			vals=apr_psprintf(pool,"%s,'%s',",vals,val->data);
 		}
 	}
 	keys[strlen(keys)-1]='\0';
@@ -42,4 +46,4 @@ my_ulonglong std_db_write(MYSQL *conn,const char *table,GHashTable *data){
 	}
 	apr_pool_destroy(pool);
 	return mysql_insert_id(conn);
-}*/
+}
