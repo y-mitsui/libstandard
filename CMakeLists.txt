@@ -24,6 +24,7 @@ endmacro()
 cmake_minimum_required (VERSION 2.6)
 project (libstandard)
 
+
 EXEC_PROGRAM(pkg-config ARGS --libs glib-2.0 OUTPUT_VARIABLE GLIB_LIBS)
 EXEC_PROGRAM(pkg-config ARGS --cflags glib-2.0 OUTPUT_VARIABLE GLIB_CFLAGS)
 EXEC_PROGRAM(pkg-config ARGS --libs apr-1 OUTPUT_VARIABLE APR_LIBS)
@@ -33,9 +34,9 @@ EXEC_PROGRAM(pkg-config ARGS --cflags dpgmm OUTPUT_VARIABLE DPGMM_CFLAGS)
 EXEC_PROGRAM(mysql_config ARGS --cflags OUTPUT_VARIABLE MYSQL_CFLAGS)
 EXEC_PROGRAM(mysql_config ARGS --libs OUTPUT_VARIABLE MYSQL_LIBS)
 SET(CMAKE_C_FLAGS "-Wall -g ${GLIB_CFLAGS} ${APR_CFLAGS} ${DPGMM_CFLAGS} ${MYSQL_CFLAGS}")
-ADD_LIBRARY(standard STATIC predict.c db.c)
+ADD_LIBRARY(standard SHARED predict.c db.c)
 
-INSTALL(TARGETS standard ARCHIVE DESTINATION lib)
+INSTALL(TARGETS standard DESTINATION lib)
 INSTALL(FILES libstandard.h DESTINATION include)
 
 add_executable (example example.c)
@@ -52,7 +53,7 @@ set(prefix      ${CMAKE_INSTALL_PREFIX})
 set(exec_prefix ${CMAKE_INSTALL_PREFIX})
 set(libdir      ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
 set(includedir  ${CMAKE_INSTALL_PREFIX}/include)
-set(LIBS        "-lstandard ${GSL_LIBS}")
+set(LIBS        "-lstandard ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS}")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/standard.pc.in
   ${CMAKE_CURRENT_BINARY_DIR}/${PNGLIB_NAME}.pc @ONLY)
 _png_generate_symlink_code(PNG_PC_INSTALL_CODE
