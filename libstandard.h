@@ -8,6 +8,7 @@
 #include <apr_pools.h>
 #include <apr_strings.h>
 
+
 enum DB_VALUE_TYPE{
 	D_TYPE_INT,
 	D_TYPE_STRING
@@ -32,5 +33,9 @@ double bestModel(double *sample,int numSample,int dimention,var_info *vars,DPGMM
 MYSQL *std_db_open(char *host,char *db,char *user,char *password);
 MYSQL_RES* std_db_read(MYSQL *conn,const char *sql);
 my_ulonglong std_db_write(MYSQL *conn,const char *table,GHashTable *data);
+GSList* query_xpath(htmlDocPtr doc,const char *query);
+char *xpathOneContent(htmlDocPtr doc,const char *xpath);
+
+GSList* getFileList(const char *dir);
 
 #endif
