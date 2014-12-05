@@ -1,3 +1,5 @@
+#include "libstandard.h"
+
 static GSList* __subGetFileList(apr_pool_t *pool,GSList* r,const char *path){
 	DIR *dir;
 	struct dirent *dp;

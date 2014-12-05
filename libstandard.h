@@ -7,15 +7,18 @@
 #include <glib.h>
 #include <apr_pools.h>
 #include <apr_strings.h>
+#include <libxml/HTMLtree.h>
+#include <libxml/HTMLparser.h>
+#include <libxml/xpath.h>
 
-enum DB_VALUE_TYPE{
+enum DB_DATA_TYPE{
 	D_TYPE_INT,
 	D_TYPE_STRING
 };
 typedef struct{
-	enum DB_VALUE_TYPE type;
-	char *value;
-}DB_VALUE;
+	enum DB_DATA_TYPE type;
+	char *data;
+}dbData;
 
 /*for predict.c*/
 enum DTYPE{
