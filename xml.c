@@ -1,3 +1,9 @@
+/**
+ * @file xml.c
+ * @brief XML accessing functions
+ * @author Y.Mitsui
+ */
+
 #include "libstandard.h"
 
 xmlNodePtr xmlNodeGetChild(xmlNodePtr parent,int no){

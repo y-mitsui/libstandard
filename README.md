@@ -2,6 +2,22 @@ libstandard
 ===========
 
 C language library of variety for UNIX/Linux programming.
+
+## Fueatures
+Data science utility
+String control
+XML/HTML access using XPath
+mathematics utility
+DB control
+
+## Requirement
+glib
+Apache portable rumtime
+libxml2
+libdpgmm of github user y-mitsui
+GNU Scientific Library
+libmysql
+cmake
 ## Install
 
     $ cmake .
