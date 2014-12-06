@@ -34,13 +34,14 @@ typedef struct{
 double bestPredictionModel(const double *sample,int numSample,int dimention,const var_info *vars,DPGMM **bestModel);
 
 xmlNodePtr xmlNodeGetChild(xmlNodePtr parent,int no);
+char* xmlNodeGetContentP(apr_pool_t *pool,xmlNodePtr node);
 
 MYSQL *std_db_open(const char *host,const char *db,const char *user,const char *password);
 MYSQL_RES* std_db_read(MYSQL *conn,const char *sql);
 my_ulonglong std_db_write(MYSQL *conn,const char *table,GHashTable *data);
 dbData* std_db_data(enum DB_DATA_TYPE type,char *data);
 GSList* query_xpath(htmlDocPtr doc,const char *query);
-char *xpathOneContent(htmlDocPtr doc,const char *xpath);
+char *xpathOneContent(apr_pool_t *pool,htmlDocPtr doc,const char *xpath);
 
 GSList* getFileList(const char *dir);
 

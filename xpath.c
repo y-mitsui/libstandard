@@ -29,9 +29,13 @@ GSList* query_xpath(htmlDocPtr doc,const char *query){
 	return r;
 }
 
-char *xpathOneContent(htmlDocPtr doc,const char *xpath){
+char *xpathOneContent(apr_pool_t *pool,htmlDocPtr doc,const char *xpath){
 	GSList* links=query_xpath(doc,xpath);
+	if(!links) return NULL;
 	char *p=(char*)xmlNodeGetContent(links->data);
+	if(pool){
+		apr_pool_userdata_set(p,"libstandard-xpathOneContent",(apr_status_t (*)(void *))free,pool);
+	}
 	g_slist_free(links);
 	return p;
 }

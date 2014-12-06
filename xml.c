@@ -16,3 +16,11 @@ xmlNodePtr xmlNodeGetChild(xmlNodePtr parent,int no){
 	}
 	return NULL;
 }
+char* xmlNodeGetContentP(apr_pool_t *pool,xmlNodePtr node){
+	char *p=(char*)xmlNodeGetContent(node);
+	if(pool){
+		apr_pool_userdata_set(p,"libstandard-xmlNodeGetContentP",(apr_status_t (*)(void *))free,pool);
+	}
+	return p;
+	
+}
