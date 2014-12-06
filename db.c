@@ -71,6 +71,7 @@ my_ulonglong std_db_write(MYSQL *conn,const char *table,GHashTable *data){
 
 	apr_pool_create(&pool,NULL);
 	keys="";
+	vals="";
 	while(g_hash_table_iter_next(&iter,(gpointer*)(void*)&key,(gpointer*)(void*)&val)){
 		keys=apr_psprintf(pool,"%s `%s`,",keys,key);
 		if(val->type==D_TYPE_INT){

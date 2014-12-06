@@ -30,7 +30,7 @@ GSList* query_xpath(htmlDocPtr doc,const char *query){
 }
 
 char *xpathOneContent(htmlDocPtr doc,const char *xpath){
-	GSList* links=query_xpath(doc,"//table[@class='db_prof_table']/tr[1]/td");
+	GSList* links=query_xpath(doc,xpath);
 	char *p=(char*)xmlNodeGetContent(links->data);
 	g_slist_free(links);
 	return p;
