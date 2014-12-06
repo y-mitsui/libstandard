@@ -1,22 +1,16 @@
+/**
+ * @file predict.c
+ * @brief Data science utility
+ * @author Y.Mitsui
+ */
+
 #include "libstandard.h"
 
-void uniqRandum(int *res,int num,int limit){
-	int i,j,tmp;
-	for(i=0;i<num;){
-		tmp=rand()%limit;
-		for(j=0;j<i;j++)
-			if(res[j]==tmp) break;
-		if(j==i){
-			res[i]=tmp;
-			i++;
-		}
-	}
-}
-void setDammyVariable(double *new,int numPattern,int data){
+static void setDammyVariable(double *new,int numPattern,int data){
 	memset(new,0,sizeof(double)*numPattern);
 	new[data]=1.0;
 }
-void makeNewData(double *new,double *old,int limit,int *stack,var_info *vars){
+static void makeNewData(double *new,const double *old,int limit,int *stack,const var_info *vars){
 			int i,idx=0;
 			if(vars[0].type==DTYPE_DISCRETE)
 				setDammyVariable(&new[0],vars[0].numPattern,old[0]);
@@ -33,7 +27,7 @@ void makeNewData(double *new,double *old,int limit,int *stack,var_info *vars){
 				}
 			}
 }
-int calcNewDimention(var_info *vars,int *stack,int limit){
+static int calcNewDimention(const var_info *vars,int *stack,int limit){
 	int r=0,i;
 	r+=(vars[0].type==DTYPE_DISCRETE) ? vars[0].numPattern:1;
 	for(i=0;i<limit;i++){
@@ -41,7 +35,7 @@ int calcNewDimention(var_info *vars,int *stack,int limit){
 	}
 	return r;
 }
-static void __subBestModel(double *sample,int numSample,int dimention,var_info *vars,int *stack,int limit,int rank,int start,double *max,DPGMM **bestCtx){
+static void __subBestModel(const double *sample,int numSample,int dimention,const var_info *vars,int *stack,int limit,int rank,int start,double *max,DPGMM **bestCtx){
 	DPGMM *model;
 	int i,j;
 	double *newData,likely;
@@ -77,7 +71,18 @@ static void __subBestModel(double *sample,int numSample,int dimention,var_info *
 		stack[rank]=0;
 	}
 }
-double bestModel(double *sample,int numSample,int dimention,var_info *vars,DPGMM **bestModel){
+/******************************************************************************/
+/*!	@brief Grant best DPGMM model selected feature
+
+	@param[in]		sample		sampling data. Format is sample[0],...,sample[dimention-1],...,sample[(numSample-1)*(dimention-1)].
+	@param[in]		numSample	number of sample
+	@param[in]		dimention	dimention of sample
+	@param[in]		vars	infomation indicated discrete or sequence for each dimention
+	@param[our]		bestModel	best DPGMM model computed
+	@return			Success:cross validation likely of best model
+					Fail:nagative
+******************************************************************************/
+double bestPredictionModel(const double *sample,int numSample,int dimention,const var_info *vars,DPGMM **bestModel){
 	int i,*stack;
 	double max;
 	max=-1.0;

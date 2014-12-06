@@ -36,13 +36,13 @@ EXEC_PROGRAM(pkg-config ARGS --cflags dpgmm OUTPUT_VARIABLE DPGMM_CFLAGS)
 EXEC_PROGRAM(mysql_config ARGS --cflags OUTPUT_VARIABLE MYSQL_CFLAGS)
 EXEC_PROGRAM(mysql_config ARGS --libs OUTPUT_VARIABLE MYSQL_LIBS)
 SET(CMAKE_C_FLAGS "-Wall -g ${XML2_CFLAGS} ${GLIB_CFLAGS} ${APR_CFLAGS} ${DPGMM_CFLAGS} ${MYSQL_CFLAGS}")
-ADD_LIBRARY(standard SHARED predict.c db.c xpath.c file.c string.c xml.c)
+ADD_LIBRARY(standard SHARED predict.c db.c xpath.c file.c string.c xml.c mathematics.c)
 
 INSTALL(TARGETS standard DESTINATION lib)
 INSTALL(FILES libstandard.h DESTINATION include)
 
-add_executable (example example.c)
-target_link_libraries(example m -L. -L/usr/local/lib -lstandard ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS} ${XML2_LIBS})
+add_executable (example example.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c)
+target_link_libraries(example m -L/usr/local/lib ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS} ${XML2_LIBS})
 
 set(PNGLIB_NAME standard)
 

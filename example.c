@@ -19,7 +19,7 @@ int main(void){
 		sample[i*dim+1]=atof(row[2]);
 		sample[i*dim+2]=atof(row[3]);
 	}
-	max=bestModel(sample,i,dim,vars,&ctx);
+	max=bestPredictionModel(sample,i,dim,vars,&ctx);
 	printf("max:%lf\n",max);
 	return 0;
 }

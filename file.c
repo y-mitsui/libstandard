@@ -1,3 +1,9 @@
+/**
+ * @file file.c
+ * @brief file and directory control utility
+ * @author Y.Mitsui
+ */
+
 #include "libstandard.h"
 
 static GSList* __subGetFileList(apr_pool_t *pool,GSList* r,const char *path){
@@ -21,6 +27,13 @@ static GSList* __subGetFileList(apr_pool_t *pool,GSList* r,const char *path){
 	closedir(dir);
 	return r;
 }
+/******************************************************************************/
+/*!	@brief Get list of file name in directry designated
+
+	@param[in]		dir	directory name searched
+	@return			Success:file name list of char pointer
+					Fail:NULL
+******************************************************************************/
 GSList* getFileList(const char *dir){
 	apr_pool_t *pool=NULL;
 	apr_initialize();

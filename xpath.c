@@ -1,4 +1,11 @@
+/**
+ * @file xpath.c
+ * @brief xpath utility of libxml2
+ * @author Y.Mitsui
+ */
+
 #include "libstandard.h"
+
 GSList* query_xpath(htmlDocPtr doc,const char *query){
 	int i;
 	xmlXPathContextPtr ctx = xmlXPathNewContext(doc);
