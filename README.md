@@ -5,7 +5,7 @@ C language library of variety for UNIX/Linux programming.
 
 ## Features
 * Data science utility
-* String control
+* String proccesing
 * XML/HTML access using XPath
 * mathematics utility
 * DB control
