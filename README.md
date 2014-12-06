@@ -30,4 +30,4 @@ cmake
 
 	$ doxygen
 	
-Open browser html/index.html for reading documentation.
+Open html/index.html with web browser for reading documentation.
