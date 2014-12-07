@@ -35,15 +35,16 @@ static int calcNewDimention(const var_info *vars,int *stack,int limit){
 	}
 	return r;
 }
+#define NUM_TEST 10
 static void __subBestModel(const double *sample,int numSample,int dimention,const var_info *vars,int *stack,int limit,int rank,int start,double *max,DPGMM **bestCtx){
 	DPGMM *model;
 	int i,j;
-	double *newData,likely;
-	int testCase[100];
+	double *newData,likely=0.0;
+	int testCase[NUM_TEST];
 	if(limit==rank){
-		model=dpgmm_init(limit,6);
+		model=dpgmm_init(limit+1,6);
 		newData=malloc(sizeof(double)*calcNewDimention(vars,stack,limit));
-		uniqRandum(testCase,100,numSample);
+		uniqRandum(testCase,NUM_TEST,numSample);
 		for(i=0;i<numSample;i++){
 			for(j=0;j<sizeof(testCase)/sizeof(testCase[0]);j++)
 				if(testCase[j]==i) break;
@@ -54,7 +55,7 @@ static void __subBestModel(const double *sample,int numSample,int dimention,cons
 		free(newData);
 		dpgmm_setDefaultsPrior(model);
 		dpgmm_solv(model,10);	
-		for(i=0;i<100;i++){
+		for(i=0;i<NUM_TEST;i++){
 			makeNewData(newData,&sample[testCase[i]*dimention],limit,stack,vars);
 			likely+=log(dpgmm_prob(model,newData));
 		}

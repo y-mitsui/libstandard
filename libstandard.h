@@ -5,6 +5,7 @@
 #include <mysql/mysql.h>
 #include <dpgmm.h>
 #include <glib.h>
+#include <gsl/gsl_integration.h>
 #include <apr_pools.h>
 #include <apr_strings.h>
 #include <libxml/HTMLtree.h>
@@ -48,4 +49,5 @@ GSList* getFileList(const char *dir);
 char *trim(char *str);
 
 void uniqRandum(int *res,int num,int limit);
+double multiIntegrate(double *range,int dimention,double (*func)(DPGMM *,double *x),void *arg);
 #endif

@@ -1,3 +1,4 @@
+cmake_minimum_required (VERSION 2.4)
 # Copyright (C) 2007-2011 Glenn Randers-Pehrson
 
 # This code is released under the libpng license.
@@ -21,8 +22,6 @@ endmacro()
 #find_package(LibXml2 REQUIRED)
 #${CMAKE_INSTALL_PREFIX}
 
-cmake_minimum_required (VERSION 2.6)
-project (libstandard)
 
 
 EXEC_PROGRAM(xml2-config ARGS --libs OUTPUT_VARIABLE XML2_LIBS)
@@ -35,10 +34,17 @@ EXEC_PROGRAM(pkg-config ARGS --libs dpgmm OUTPUT_VARIABLE DPGMM_LIBS)
 EXEC_PROGRAM(pkg-config ARGS --cflags dpgmm OUTPUT_VARIABLE DPGMM_CFLAGS)
 EXEC_PROGRAM(mysql_config ARGS --cflags OUTPUT_VARIABLE MYSQL_CFLAGS)
 EXEC_PROGRAM(mysql_config ARGS --libs OUTPUT_VARIABLE MYSQL_LIBS)
-SET(CMAKE_C_FLAGS "-Wall -g ${XML2_CFLAGS} ${GLIB_CFLAGS} ${APR_CFLAGS} ${DPGMM_CFLAGS} ${MYSQL_CFLAGS}")
-ADD_LIBRARY(standard SHARED predict.c db.c xpath.c file.c string.c xml.c mathematics.c)
+SET(CMAKE_C_FLAGS "-Wall -g -O0 ${XML2_CFLAGS} ${GLIB_CFLAGS} ${APR_CFLAGS} ${DPGMM_CFLAGS} ${MYSQL_CFLAGS}")
+#SET(CMAKE_BUILD_TYPE Release)
 
-INSTALL(TARGETS standard DESTINATION lib)
+project (standard C)
+SET(serial "1.0.0")
+SET(soserial "1")
+#ADD_LIBRARY(standard SHARED predict.c db.c xpath.c file.c string.c xml.c mathematics.c)
+ADD_LIBRARY(standard STATIC xml.c predict.c db.c xpath.c file.c string.c mathematics.c)
+SET_TARGET_PROPERTIES(standard PROPERTIES VERSION ${serial} SOVERSION ${soserial})
+INSTALL(TARGETS standard ARCHIVE DESTINATION lib)
+#INSTALL(TARGETS standard LIBRARY DESTINATION lib)
 INSTALL(FILES libstandard.h DESTINATION include)
 
 add_executable (example example.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c)
