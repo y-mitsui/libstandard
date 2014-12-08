@@ -33,6 +33,7 @@ typedef struct{
 }var_info;
 
 double bestPredictionModel(const double *sample,int numSample,int dimention,const var_info *vars,DPGMM **bestModel);
+double crossValidationLikelihood(double *sample,int numSample,int dimention,void *(*train)(void *,double *,int ),double (*predict)(void *,double *),void *arg);
 
 xmlNodePtr xmlNodeGetChild(xmlNodePtr parent,int no);
 char* xmlNodeGetContentP(apr_pool_t *pool,xmlNodePtr node);

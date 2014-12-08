@@ -95,3 +95,18 @@ double bestPredictionModel(const double *sample,int numSample,int dimention,cons
 	free(stack);
 	return max;
 }
+
+double crossValidationLikelihood(double *sample,int numSample,int dimention,void *(*train)(void *,double *,int ),double (*predict)(void *,double *),void *arg){
+	int i=0;
+	double *newSample;
+	double likelihood=0.0;
+
+	newSample=malloc(sizeof(double)*(numSample-1));
+	for(i=0;i<numSample;i++){
+		memcpy(newSample,sample,i*dimention*sizeof(double));
+		memcpy(newSample,&sample[(i+1)*dimention],(numSample-(i+1))*sizeof(double));
+		void *ctx=train(arg,newSample,numSample-1);
+		likelihood+=log(predict(ctx,&sample[i*dimention]));
+	}
+	return likelihood;
+}
