@@ -51,4 +51,5 @@ char *trim(char *str);
 
 void uniqRandum(int *res,int num,int limit);
 double multiIntegrate(double *range,int dimention,double (*func)(DPGMM *,double *x),void *arg);
+double log_normal_distribution(double x,double u,double sigma);
 #endif
