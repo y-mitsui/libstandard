@@ -6,6 +6,10 @@
 #include <dpgmm.h>
 #include <glib.h>
 #include <gsl/gsl_integration.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_blas.h>
 #include <apr_pools.h>
 #include <apr_strings.h>
 #include <libxml/HTMLtree.h>
@@ -54,13 +58,10 @@ double multiIntegrate(double *range,int dimention,double (*func)(DPGMM *,double 
 double log_normal_distribution(double x,double u,double sigma);
 
 
-gsl_vector *gsl_vector_clone(gsl_vector *src);
-gsl_matrix *gsl_matrix_clone(gsl_matrix *src);
-void gsl_matrix_mul_constant(gsl_matrix *a,const double x);
-void gsl_vector_mul_constant(gsl_vector *a,const double x);
-gsl_matrix* gsl_vector_outer(gsl_vector *a,gsl_vector *b);
-double gsl_vector_sum(gsl_vector *v);
-gsl_vector *gsl_cumsum(gsl_vector *v);
-gsl_vector* gsl_matrix_sum_row(gsl_matrix *m);
+gsl_matrix *gsl_inverse(gsl_matrix *m);
+double gsl_det(gsl_matrix *m);
+
+double multi_log_normal_distribution(gsl_vector *data,gsl_vector *u,gsl_matrix *sigma);
+double log_normal_distribution(double x,double u,double sigma);
 
 #endif

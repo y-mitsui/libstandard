@@ -70,7 +70,3 @@ double multiIntegrate(double *range,int dimention,double (*func)(DPGMM *,double 
 	gsl_integration_qng(&F,range[0],range[1],EPSABS,EPSREL,&result,&error,&neval);
 	return result;
 }
-
-double log_normal_distribution(double x,double u,double sigma){
-	return 1.0/(sqrt(2*M_PI)*sigma*x)*exp(-pow(log(x)-u,2)/2*sigma*sigma);
-}

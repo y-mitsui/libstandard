@@ -41,14 +41,16 @@ project (standard C)
 SET(serial "1.0.0")
 SET(soserial "1")
 #ADD_LIBRARY(standard SHARED predict.c db.c xpath.c file.c string.c xml.c mathematics.c)
-ADD_LIBRARY(standard STATIC xml.c predict.c db.c xpath.c file.c string.c mathematics.c)
+ADD_LIBRARY(standard STATIC xml.c predict.c db.c xpath.c file.c string.c mathematics.c gsl.c lognormal.c)
 SET_TARGET_PROPERTIES(standard PROPERTIES VERSION ${serial} SOVERSION ${soserial})
 INSTALL(TARGETS standard ARCHIVE DESTINATION lib)
 #INSTALL(TARGETS standard LIBRARY DESTINATION lib)
 INSTALL(FILES libstandard.h DESTINATION include)
 
-add_executable (example example.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c gsl.c)
+add_executable (example example.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c gsl.c lognormal.c)
+add_executable (example2 example2.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c gsl.c lognormal.c)
 target_link_libraries(example m -L/usr/local/lib ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS} ${XML2_LIBS})
+target_link_libraries(example2 m -L/usr/local/lib ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS} ${XML2_LIBS})
 
 set(PNGLIB_NAME standard)
 
