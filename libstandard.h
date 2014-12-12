@@ -52,4 +52,15 @@ char *trim(char *str);
 void uniqRandum(int *res,int num,int limit);
 double multiIntegrate(double *range,int dimention,double (*func)(DPGMM *,double *x),void *arg);
 double log_normal_distribution(double x,double u,double sigma);
+
+
+gsl_vector *gsl_vector_clone(gsl_vector *src);
+gsl_matrix *gsl_matrix_clone(gsl_matrix *src);
+void gsl_matrix_mul_constant(gsl_matrix *a,const double x);
+void gsl_vector_mul_constant(gsl_vector *a,const double x);
+gsl_matrix* gsl_vector_outer(gsl_vector *a,gsl_vector *b);
+double gsl_vector_sum(gsl_vector *v);
+gsl_vector *gsl_cumsum(gsl_vector *v);
+gsl_vector* gsl_matrix_sum_row(gsl_matrix *m);
+
 #endif

@@ -22,7 +22,7 @@ gsl_vector *m_log_normal_distribution(gsl_vector *data,gsl_vector *u,gsl_matrix 
 	gsl_blas_dgemm (CblasNoTrans, CblasNoTrans,1.0,data, gsl_inverse(sigma), 0.0, tmp);
 	for(i=0;i<tmp->size1;i++){
 		for(j=0;j<tmp->size1;j++){
-			gsl_vector_set(tmp,i,j,exp(gsl_matrix_get(tmp,i,j)));
+			gsl_vector_set(tmp,i,j,exp(-gsl_matrix_get(tmp,i,j)));
 		}
 	}
 	
@@ -31,6 +31,7 @@ double log_normal_distribution(double x,double u,double sigma){
 	return 1.0/(sqrt(2*M_PI)*sigma*x)*exp(-pow(log(x)-u,2)/2*sigma*sigma);
 }
 int main(void){
+	double x,y;
 	gsl_vector *data=gsl_vector_alloc(2);
 	gsl_vecotr *u=gsl_vector_alloc(2);
 	gsl_vector_set(u,0,0);
@@ -45,7 +46,6 @@ int main(void){
 			gsl_vector_set(data,0,x);
 			gsl_vector_set(data,1,x);
 			printf("%lf %lf %lf\n",x,y,m_log_normal_distribution(data,u,sigma));
-		//printf("%lf %lf\n",x,log_normal_distribution(x,0.0,1.0));
 		}
 	}
 }

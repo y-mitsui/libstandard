@@ -47,8 +47,7 @@ INSTALL(TARGETS standard ARCHIVE DESTINATION lib)
 #INSTALL(TARGETS standard LIBRARY DESTINATION lib)
 INSTALL(FILES libstandard.h DESTINATION include)
 
-add_executable (example example.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c)
-add_executable (example2 example2.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c)
+add_executable (example example.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c gsl.c)
 target_link_libraries(example m -L/usr/local/lib ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS} ${XML2_LIBS})
 
 set(PNGLIB_NAME standard)
