@@ -71,39 +71,55 @@ void logNormalFree(void *arg){
 	gsl_matrix_free(p->sigma);
 	free(p);
 }
-double nrand()
-{
-        static int sw=0;
-        static double r1,r2,s;
-
-        if (sw==0){
-                sw=1;
-                do {
-                        r1=2.0*drand48()-1.0;
-                        r2=2.0*drand48()-1.0;
-                        s=r1*r1+r2*r2;
-                } while (s>1.0 || s==0.0);
-                        s=sqrt(-2.0*log(s)/s);
-                        return(r1*s);
-        }
-        else {
-                sw=0;
-                return(r2*s);
-        }
+typedef struct{
+	gsl_vector *min;
+	gsl_vector *max;
+	int dimention;
+}Uniform;
+void *uniformTrain(double *sample,int numSample,int dimention){
+	int i,j;
+	Uniform *r=calloc(1,sizeof(Uniform));
+	r->min=gsl_vector_calloc(dimention);
+	r->max=gsl_vector_calloc(dimention);
+	for(i=0;i<dimention;i++){
+		gsl_vector_set(r->min,i,sample[i]);
+		gsl_vector_set(r->max,i,sample[i]);
+		for(j=1;j<numSample;j++){
+			if(gsl_vector_get(r->min,i) > sample[j*dimention+i]){
+				gsl_vector_set(r->min,i,sample[j*dimention+i]);
+			}else if(gsl_vector_get(r->max,i) < sample[j*dimention+i]){
+				gsl_vector_set(r->max,i,sample[j*dimention+i]);
+			}
+		}
+	}
+	return r;
 }
-#define NUM_DATA_SAMPLE 10
+double uniformPredict(void *arg,double *x){
+	Uniform *ctx=arg;
+	double r=uniformPdf(ctx->max,ctx->min);
+	return (r<1.0e-16) ? 1.0e-16 : r;
+}
+void uniformFree(void *arg){
+	Uniform *ctx=arg;
+	gsl_vector_free(ctx->min);
+	gsl_vector_free(ctx->max);
+	free(ctx);
+}
+#define NUM_DATA_SAMPLE 500
 int main(void){
+	gsl_rng *rng = gsl_rng_alloc (gsl_rng_default);
+	gsl_rng_set(rng,time(NULL));
 	int i;
-	void *(*trains[])(double *,int,int)={dpgmmTrain,logNormalTrain};
-	double (*predicts[])(void *,double *)={dpgmmPredict,logNormalPredict};
-	void (*frees[])(void *)={(void (*)(void *))dpgmm_release,logNormalFree};
+	void *(*trains[])(double *,int,int)={dpgmmTrain,logNormalTrain,uniformTrain};
+	double (*predicts[])(void *,double *)={dpgmmPredict,logNormalPredict,uniformPredict};
+	void (*frees[])(void *)={(void (*)(void *))dpgmm_release,logNormalFree,uniformFree};
 	double sample[NUM_DATA_SAMPLE];
 	srand48(time(NULL));
 	for(i=0;i<NUM_DATA_SAMPLE;i++){
-		sample[i]=exp(nrand()+10.0)*2.5;
+		sample[i]=/*exp(2.5*gsl_ran_gaussian(rng,1.0)+10)*/drand48()*2.0;
 		if(sample[i]<1.0e-16)  sample[i]=1.0e-16;
 	}
-	int r=bestModel(sample,NUM_DATA_SAMPLE,1,trains,predicts,frees,2);
+	int r=bestModel(sample,NUM_DATA_SAMPLE,1,trains,predicts,frees,sizeof(trains)/sizeof(trains[0]));
 	printf("r:%d\n",r);
 	return 0;
 }
