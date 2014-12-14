@@ -49,8 +49,16 @@ INSTALL(FILES libstandard.h DESTINATION include)
 
 add_executable (example example.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c gsl.c lognormal.c)
 add_executable (example2 example2.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c gsl.c lognormal.c)
+add_executable (example3 example3.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c gsl.c lognormal.c)
+add_executable (example4 example4.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c gsl.c lognormal.c)
+add_executable (example5 example5.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c gsl.c lognormal.c)
+add_executable (example6 example6.c predict.c db.c xpath.c file.c string.c xml.c mathematics.c gsl.c lognormal.c)
 target_link_libraries(example m -L/usr/local/lib ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS} ${XML2_LIBS})
 target_link_libraries(example2 m -L/usr/local/lib ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS} ${XML2_LIBS})
+target_link_libraries(example3 m -L/usr/local/lib ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS} ${XML2_LIBS})
+target_link_libraries(example4 m -L/usr/local/lib ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS} ${XML2_LIBS})
+target_link_libraries(example5 m -L/usr/local/lib ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS} ${XML2_LIBS})
+target_link_libraries(example6 m -L/usr/local/lib ${GLIB_LIBS} ${APR_LIBS} ${DPGMM_LIBS} ${MYSQL_LIBS} ${XML2_LIBS})
 
 set(PNGLIB_NAME standard)
 

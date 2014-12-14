@@ -3,15 +3,16 @@ double multi_log_normal_distribution(gsl_vector *data,gsl_vector *u,gsl_matrix *
 	int i;
 	
 	/* 1/det(sigma) */
-	double sigmaDetInv=1.0/gsl_det(sigma);
+	double sigmaDetInv=pow(gsl_det(sigma),-0.5);
 	
 	/* 1/(y_1*y_2...y_p) */
 	double dataMulInv=1.0;
 	for(i=0;i<data->size;i++){
 		dataMulInv*=gsl_vector_get(data,i);
 	}
+	dataMulInv=pow(dataMulInv,-1.0);
 
-	double constant=pow(1.0/sqrt(2*M_PI),data->size);
+	double constant=pow(2*M_PI,-(double)data->size/2.0);
 	
 	/* log(y)-u */
 	gsl_matrix *logDataSubUWidth=gsl_matrix_alloc(1,data->size);

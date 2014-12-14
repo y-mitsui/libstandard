@@ -37,7 +37,7 @@ typedef struct{
 }var_info;
 
 double bestPredictionModel(const double *sample,int numSample,int dimention,const var_info *vars,DPGMM **bestModel);
-double crossValidationLikelihood(double *sample,int numSample,int dimention,void *(*train)(void *,double *,int ),double (*predict)(void *,double *),void *arg);
+double crossValidationLikelihood(double *sample,int numSample,int dimention,void *(*train)(double *,int,int ),double (*predict)(void *,double *),void (*modelFree)(void*));
 
 xmlNodePtr xmlNodeGetChild(xmlNodePtr parent,int no);
 char* xmlNodeGetContentP(apr_pool_t *pool,xmlNodePtr node);
@@ -54,7 +54,7 @@ GSList* getFileList(const char *dir);
 char *trim(char *str);
 
 void uniqRandum(int *res,int num,int limit);
-double multiIntegrate(double *range,int dimention,double (*func)(DPGMM *,double *x),void *arg);
+double multiIntegrate(double *range,int dimention,double (*func)(void *,double *x),void *arg);
 double log_normal_distribution(double x,double u,double sigma);
 
 
@@ -63,5 +63,8 @@ double gsl_det(gsl_matrix *m);
 
 double multi_log_normal_distribution(gsl_vector *data,gsl_vector *u,gsl_matrix *sigma);
 double log_normal_distribution(double x,double u,double sigma);
+double uniformPdf(gsl_vector *alpha,gsl_vector *bata);
+
+int bestModel(double *sample,int numSample,int dimention,void *(**trains)(double *,int,int),double (**predicts)(void *,double *),void (**frees)(void*),int numModel);
 
 #endif

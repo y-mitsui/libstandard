@@ -22,4 +22,21 @@ double gsl_det(gsl_matrix *m){
 	gsl_permutation_free(p);
 	
 	return n;
-}
+}/*
+void covariance_matrix(double *sample ,int numSample,gsl_vector **means,gsl_matrix **cover){
+	gsl_vector *means=gsl_vector_alloc(ctx->dims);
+	gsl_matrix *cover=gsl_matrix_alloc(ctx->dims,ctx->dims);
+	for(i=0;i<ctx->dims;i++){
+		gsl_vector_set(means,i,gsl_stats_mean(&ctx->data[i],ctx->dims,ctx->numData));
+	}
+	for(i=0;i<ctx->dims;i++){
+		gsl_matrix_set(cover,i,i,gsl_stats_variance_m(&ctx->data[i],ctx->dims,ctx->numData,gsl_vector_get(means,i)));
+		for(j=i+1;j<ctx->dims;j++){
+			gsl_matrix_set(cover,i,j,gsl_stats_covariance_m(&ctx->data[i],ctx->dims,&ctx->data[j],ctx->dims,ctx->numData,gsl_vector_get(means,i),gsl_vector_get(means,j)));
+			gsl_matrix_set(cover,j,i,gsl_matrix_get(cover,i,j));
+		}
+	}
+}*/
+
+
+

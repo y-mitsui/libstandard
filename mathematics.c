@@ -29,7 +29,7 @@ void uniqRandum(int *res,int num,int limit){
 typedef struct{
 	int dimention;
 	double *range;
-	double (*func)(DPGMM *,double *);
+	double (*func)(void *,double *);
 	void *arg;
 	double *stack;
 	int rank;
@@ -49,10 +49,11 @@ double __subMultiIntegrate(double x,void *arg){
 		F.function = &__subMultiIntegrate;
 		F.params=info;
 		gsl_integration_qng(&F,info->range[(info->rank-1)*info->dimention],info->range[(info->rank-1)*info->dimention+1],EPSABS,EPSREL,&result,&error,&neval);
+		info->rank--;
 		return result;
 	}
 }
-double multiIntegrate(double *range,int dimention,double (*func)(DPGMM *,double *x),void *arg){
+double multiIntegrate(double *range,int dimention,double (*func)(void *,double *x),void *arg){
 	double result,error;
 	size_t neval;
 	ingArg info;
@@ -65,8 +66,18 @@ double multiIntegrate(double *range,int dimention,double (*func)(DPGMM *,double 
 	info.arg=arg;
 	info.stack=malloc(sizeof(double)*dimention);
 	
-	F.function = &__subMultiIntegrate;
+	F.function = __subMultiIntegrate;
 	F.params=&info;
 	gsl_integration_qng(&F,range[0],range[1],EPSABS,EPSREL,&result,&error,&neval);
 	return result;
+}
+double uniformPdf(gsl_vector *alpha,gsl_vector *bata){
+	double r=1.0;
+	int i;
+	gsl_vector *rages=gsl_vector_clone(alpha);
+	gsl_vector_sub(rages,bata);	
+	for(i=0;i<rages->size;i++){
+		r*=gsl_vector_get(rages,i);
+	}
+	return 1.0/r;
 }

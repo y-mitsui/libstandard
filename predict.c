@@ -96,17 +96,34 @@ double bestPredictionModel(const double *sample,int numSample,int dimention,cons
 	return max;
 }
 
-double crossValidationLikelihood(double *sample,int numSample,int dimention,void *(*train)(void *,double *,int ),double (*predict)(void *,double *),void *arg){
+double crossValidationLikelihood(double *sample,int numSample,int dimention,void *(*train)(double *,int,int ),double (*predict)(void *,double *),void (*modelFree)(void*)){
 	int i=0;
 	double *newSample;
 	double likelihood=0.0;
 
-	newSample=malloc(sizeof(double)*(numSample-1));
+	newSample=malloc(sizeof(double)*(numSample-1)*dimention);
 	for(i=0;i<numSample;i++){
 		memcpy(newSample,sample,i*dimention*sizeof(double));
-		memcpy(newSample,&sample[(i+1)*dimention],(numSample-(i+1))*sizeof(double));
-		void *ctx=train(arg,newSample,numSample-1);
+		memcpy(newSample,&sample[(i+1)*dimention],(numSample-(i+1))*sizeof(double)*dimention);
+		void *ctx=train(newSample,numSample-1,dimention);
 		likelihood+=log(predict(ctx,&sample[i*dimention]));
+		//printf("likelihood:%lf\n",likelihood);
+		modelFree(ctx);
 	}
+	free(newSample);
 	return likelihood;
+}
+int bestModel(double *sample,int numSample,int dimention,void *(**trains)(double *,int,int),double (**predicts)(void *,double *),void (**frees)(void*),int numModel){
+	int i;
+	double max;
+	int bestIdx=-1;
+	for(i=0;i<numModel;i++){
+		double tmp=crossValidationLikelihood(sample,numSample,dimention,trains[i],predicts[i],frees[i]);
+		printf("tmp:%lf\n",tmp);
+		if(bestIdx < 0 || max<tmp){
+			max=tmp;
+			bestIdx=i;
+		}
+	}
+	return bestIdx;
 }
