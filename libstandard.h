@@ -102,6 +102,8 @@ double uniformPredict(void *arg,const double *x);
 void uniformFree(void *arg);
 bestPrediction *bestPredictionModel(const double *sample,int numSample,int dimention);
 void bestPredictionFree(bestPrediction *ctx);
+void makeDammyData(double *new,const double *old,int limit,int *stack,const var_info *vars);
+int calcNewDimention(const var_info *vars,int *stack,int limit);
 
 
 #endif

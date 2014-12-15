@@ -10,40 +10,63 @@ static void setDammyVariable(double *new,int numPattern,int data){
 	memset(new,0,sizeof(double)*numPattern);
 	new[data]=1.0;
 }
-void makeDammyData(double *new,const double *old,int limit,int *stack,const var_info *vars){
+void makeDammyData(double *new,const double *old,int numSample,int dimention,int newDimention,const var_info *vars){
 	int i,idx=0;
-	if(vars[0].type==DTYPE_DISCRETE)
-		setDammyVariable(&new[0],vars[0].numPattern,old[0]);
-	else
-		new[0]=old[0]; 
-	idx+=vars[0].numPattern;
-	for(i=0;i<limit;i++){
-		if(vars[i].type==DTYPE_DISCRETE){
-			setDammyVariable(&new[idx],vars[stack[i]+1].numPattern,old[stack[i]+1]);
-			idx+=vars[i].numPattern;
+	for(i=0;i<numSample;i++){
+		idx=0;
+		if(vars[0].type==DTYPE_DISCRETE){
+			setDammyVariable(&new[i*dimention],vars[0].numPattern,&old[i*dimention]);
+			idx+=vars[0].numPattern;
 		}else{
-			new[idx]=old[stack[i]+1]; 
+			new[i*dimention]=old[i*dimention]; 
 			idx++;
+		}
+		for(j=0;j<newDimention;j++){
+			if(vars[i].type==DTYPE_DISCRETE){
+				setDammyVariable(&new[idx],vars[i+1].numPattern,old[i+1]);
+				idx+=vars[i].numPattern;
+			}else{
+				new[i*dimention+idx]=old[i+1]; 
+				idx++;
+			}
 		}
 	}
 }
-/*
-static int calcNewDimention(const var_info *vars,int *stack,int limit){
+int calcNewDimention(const var_info *vars,int *stack,int limit){
 	int r=0,i;
 	r+=(vars[0].type==DTYPE_DISCRETE) ? vars[0].numPattern:1;
 	for(i=0;i<limit;i++){
 		r+=(vars[i].type==DTYPE_DISCRETE) ? vars[i].numPattern:1;
 	}
 	return r;
-}*/
+}
+static double *newFeatures(double *sample,int numSample,int dimention,int *stack,int numStack,var_info **new_vars,var_info *vars){
+	double *r=malloc(sizeof(double)*numSample*numStack);
+	int i,j;
+
+	for(i=0;i<numStack;i++){
+		memcpy(new_vars[i],vars[stack[i]],sizeof(vars[i]));
+	}
+	for(i=0;i<numSample;i++){
+		for(j=0;j<numStack;j++){
+			r[i*numStack+j]=sample[i*dimention+stack[j]];
+		}
+	}
+	return r;
+}
 #define NUM_TEST 10
 static void __subBestModel(const double *sample,int numSample,int dimention,const var_info *vars,int *stack,int limit,int rank,int start,bestPrediction **bestCtx){
 	//DPGMM *model;
 	int i/*,j*/;
-	//double *newData,likely=0.0;
+	double *newData/*,likely=0.0*/;
 	//int testCase[NUM_TEST];
 	if(limit==rank){
-		bestPrediction *ctx=bestPredictionModel(sample,numSample,dimention);
+		var_info *new_vars=malloc(sizeof(var_info)*limit);
+		double *newF=newFeatures(sample,numSample,dimention,stack,limit,new_vars,vars);
+		int dim=calcNewDimention(new_vars,limit);
+		newData=malloc(sizeof(double)*dim*numSample);
+		makeDammyData(newData,&sample[testCase[i]*dimention],limit,new_vars);
+		bestPrediction *ctx=bestPredictionModel(newData,numSample,dim);
 		bestPrediction *tmp=*bestCtx;
 		if(tmp->evaluation < ctx->evaluation){
 			bestPredictionFree(tmp);
@@ -51,6 +74,7 @@ static void __subBestModel(const double *sample,int numSample,int dimention,cons
 		}else{
 			bestPredictionFree(ctx);
 		}
+		free(newData);
 		/*
 		model=dpgmm_init(limit+1,6);
 		newData=malloc(sizeof(double)*calcNewDimention(vars,stack,limit));
