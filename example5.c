@@ -14,7 +14,7 @@ double func(void *arg,double *x){
 	for(i=0;i<p->dimention;i++){
 		gsl_vector_set(data,i,x[i]);
 	}
-	double r=uniformPdf(p->alpha,p->beta);
+	double r=uniformPdf(p->alpha,p->beta,x);
 	printf("%lf\n",r);
 	return r;
 }

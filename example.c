@@ -2,11 +2,11 @@
 
 int main(void){
 	int dim=3,i;
-	DPGMM *ctx;
+	//DPGMM *ctx;
 	MYSQL *conn=std_db_open(NULL,"sample","root","password");
 	MYSQL_RES *res=std_db_read(conn,"SELECT rank,pops,win_rate from race");
 	int numSample = mysql_num_rows(res);
-	double max;
+	//double max;
 	var_info vars[3];
 	double *sample=malloc(sizeof(double)*dim*numSample);
 	char **row;
@@ -19,7 +19,7 @@ int main(void){
 		sample[i*dim+1]=atof(row[2]);
 		sample[i*dim+2]=atof(row[3]);
 	}
-	max=bestPredictionModel(sample,i,dim,vars,&ctx);
-	printf("max:%lf\n",max);
+	//max=bestFeaturesModel(sample,i,dim,vars,&ctx);
+	//printf("max:%lf\n",max);
 	return 0;
 }

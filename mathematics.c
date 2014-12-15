@@ -71,13 +71,18 @@ double multiIntegrate(double *range,int dimention,double (*func)(void *,double *
 	gsl_integration_qng(&F,range[0],range[1],EPSABS,EPSREL,&result,&error,&neval);
 	return result;
 }
-double uniformPdf(gsl_vector *alpha,gsl_vector *bata){
+double uniformPdf(gsl_vector *alpha,gsl_vector *beta,const double *x){
 	double r=1.0;
 	int i;
+	for(i=0;i<alpha->size;i++){
+		if(x[i] > gsl_vector_get(alpha,i)) return 0;
+		if(x[i] < gsl_vector_get(beta,i)) return 0;
+	}
 	gsl_vector *rages=gsl_vector_clone(alpha);
-	gsl_vector_sub(rages,bata);	
+	gsl_vector_sub(rages,beta);
 	for(i=0;i<rages->size;i++){
 		r*=gsl_vector_get(rages,i);
 	}
+	
 	return 1.0/r;
 }

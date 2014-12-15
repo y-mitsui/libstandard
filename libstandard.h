@@ -36,8 +36,33 @@ typedef struct{
 	int numPattern;
 }var_info;
 
-double bestPredictionModel(const double *sample,int numSample,int dimention,const var_info *vars,DPGMM **bestModel);
-double crossValidationLikelihood(double *sample,int numSample,int dimention,void *(*train)(double *,int,int ),double (*predict)(void *,double *),void (*modelFree)(void*));
+enum ModelType{
+	DPGMM_STICK_BREAK,
+	LOG_NORMAL_LIKELYHOOD,
+	UNIFORM_LIKELYHOOD
+};
+typedef struct{
+	enum ModelType type;
+	double (*predict)(void *,const double *);
+	void (*free)(void*);
+	void *ctx;
+	double evaluation;
+}bestPrediction;
+
+typedef struct {
+	int dimention;
+	gsl_vector *u;
+	gsl_matrix *sigma;
+}logNormal;
+
+typedef struct{
+	gsl_vector *min;
+	gsl_vector *max;
+	int dimention;
+}Uniform;
+
+double bestFeaturesModel(const double *sample,int numSample,int dimention,const var_info *vars,bestPrediction **bestModel);
+double crossValidationLikelihood(const double *sample,int numSample,int dimention,void *(*train)(const double *,int,int ),double (*predict)(void *,const double *),void (*modelFree)(void*));
 
 xmlNodePtr xmlNodeGetChild(xmlNodePtr parent,int no);
 char* xmlNodeGetContentP(apr_pool_t *pool,xmlNodePtr node);
@@ -63,8 +88,20 @@ double gsl_det(gsl_matrix *m);
 
 double multi_log_normal_distribution(gsl_vector *data,gsl_vector *u,gsl_matrix *sigma);
 double log_normal_distribution(double x,double u,double sigma);
-double uniformPdf(gsl_vector *alpha,gsl_vector *bata);
+double uniformPdf(gsl_vector *alpha,gsl_vector *beta,const double *x);
 
-int bestModel(double *sample,int numSample,int dimention,void *(**trains)(double *,int,int),double (**predicts)(void *,double *),void (**frees)(void*),int numModel);
+int bestModel(const double *sample,int numSample,int dimention,void *(**trains)(const double *,int,int),double (**predicts)(void *,const double *),void (**frees)(void*),int numModel,double *bestEva);
+
+void *dpgmmTrain(const double *sample,int numSample,int dimention);
+double dpgmmPredict(void *arg,const double *sample);
+void *logNormalTrain(const double *sample,int numSample,int dimention);
+double logNormalPredict(void *arg,const double *x);
+void logNormalFree(void *arg);
+void *uniformTrain(const double *sample,int numSample,int dimention);
+double uniformPredict(void *arg,const double *x);
+void uniformFree(void *arg);
+bestPrediction *bestPredictionModel(const double *sample,int numSample,int dimention);
+void bestPredictionFree(bestPrediction *ctx);
+
 
 #endif
