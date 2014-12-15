@@ -14,19 +14,12 @@ void makeDammyData(double *new,const double *old,int numSample,int dimention,int
 	int i,idx=0;
 	for(i=0;i<numSample;i++){
 		idx=0;
-		if(vars[0].type==DTYPE_DISCRETE){
-			setDammyVariable(&new[i*dimention],vars[0].numPattern,&old[i*dimention]);
-			idx+=vars[0].numPattern;
-		}else{
-			new[i*dimention]=old[i*dimention]; 
-			idx++;
-		}
-		for(j=0;j<newDimention;j++){
-			if(vars[i].type==DTYPE_DISCRETE){
-				setDammyVariable(&new[idx],vars[i+1].numPattern,old[i+1]);
-				idx+=vars[i].numPattern;
+		for(j=0;j<dimention;j++){
+			if(vars[j].type==DTYPE_DISCRETE){
+				setDammyVariable(&new[i*newDimention+idx],vars[j].numPattern,(int)old[i*dimention+j]);
+				idx+=vars[j].numPattern;
 			}else{
-				new[i*dimention+idx]=old[i+1]; 
+				new[idx*newDimention]=old[j*dimention]; 
 				idx++;
 			}
 		}
