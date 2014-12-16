@@ -11,7 +11,7 @@ static void setDammyVariable(double *new,int numPattern,int data){
 	new[data]=1.0;
 }
 void makeDammyData(double *new,const double *old,int numSample,int dimention,int newDimention,const var_info *vars){
-	int i,idx=0;
+	int i,j,idx=0;
 	for(i=0;i<numSample;i++){
 		idx=0;
 		for(j=0;j<dimention;j++){
@@ -25,7 +25,7 @@ void makeDammyData(double *new,const double *old,int numSample,int dimention,int
 		}
 	}
 }
-int calcNewDimention(const var_info *vars,int *stack,int limit){
+int calcNewDimention(const var_info *vars,int limit){
 	int r=0,i;
 	r+=(vars[0].type==DTYPE_DISCRETE) ? vars[0].numPattern:1;
 	for(i=0;i<limit;i++){
@@ -33,12 +33,12 @@ int calcNewDimention(const var_info *vars,int *stack,int limit){
 	}
 	return r;
 }
-static double *newFeatures(double *sample,int numSample,int dimention,int *stack,int numStack,var_info **new_vars,var_info *vars){
+static double *newFeatures(const double *sample,int numSample,int dimention,int *stack,int numStack,var_info *new_vars,const var_info *vars){
 	double *r=malloc(sizeof(double)*numSample*numStack);
 	int i,j;
 
 	for(i=0;i<numStack;i++){
-		memcpy(new_vars[i],vars[stack[i]],sizeof(vars[i]));
+		memcpy(&new_vars[i],&vars[stack[i]],sizeof(vars[i]));
 	}
 	for(i=0;i<numSample;i++){
 		for(j=0;j<numStack;j++){
@@ -58,7 +58,7 @@ static void __subBestModel(const double *sample,int numSample,int dimention,cons
 		double *newF=newFeatures(sample,numSample,dimention,stack,limit,new_vars,vars);
 		int dim=calcNewDimention(new_vars,limit);
 		newData=malloc(sizeof(double)*dim*numSample);
-		makeDammyData(newData,&sample[testCase[i]*dimention],limit,new_vars);
+		makeDammyData(newData,newF,numSample,dimention,limit,new_vars);
 		bestPrediction *ctx=bestPredictionModel(newData,numSample,dim);
 		bestPrediction *tmp=*bestCtx;
 		if(tmp->evaluation < ctx->evaluation){
@@ -68,30 +68,7 @@ static void __subBestModel(const double *sample,int numSample,int dimention,cons
 			bestPredictionFree(ctx);
 		}
 		free(newData);
-		/*
-		model=dpgmm_init(limit+1,6);
-		newData=malloc(sizeof(double)*calcNewDimention(vars,stack,limit));
-		uniqRandum(testCase,NUM_TEST,numSample);
-		for(i=0;i<numSample;i++){
-			for(j=0;j<sizeof(testCase)/sizeof(testCase[0]);j++)
-				if(testCase[j]==i) break;
-			if(j<sizeof(testCase)/sizeof(testCase[0])) continue;
-			makeNewData(newData,&sample[i*dimention],limit,stack,vars);
-			dpgmm_add(model,newData);
-		}
-		free(newData);
-		dpgmm_setDefaultsPrior(model);
-		dpgmm_solv(model,10);	
-		for(i=0;i<NUM_TEST;i++){
-			makeNewData(newData,&sample[testCase[i]*dimention],limit,stack,vars);
-			likely+=log(dpgmm_prob(model,newData));
-		}
-		if(*max < likely || bestCtx==NULL){
-			*max=likely;
-			if(*bestCtx) dpgmm_release(*bestCtx);
-			*bestCtx=model;
-		}else
-			dpgmm_release(model);*/
+		free(newF);
 	}
 	for(i=start;i<dimention-1;i++){
 		stack[rank]=i;
