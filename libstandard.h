@@ -107,5 +107,6 @@ void makeDammyData(double *new,const double *old,int numSample,int dimention,int
 int calcNewDimention(const var_info *vars,int limit);
 bestPrediction *trainFromDB(const char *sql,const char *host,const char *db,const char *user,const char *password,const var_info *vars);
 
+void arrPrint(int *arr,int num);
 
 #endif

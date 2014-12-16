@@ -60,9 +60,10 @@ static void __subBestModel(const double *sample,int numSample,int dimention,cons
 		newData=malloc(sizeof(double)*dim*numSample);
 		makeDammyData(newData,newF,numSample,dimention,limit,new_vars);
 		bestPrediction *ctx=bestPredictionModel(newData,numSample,dim);
-		bestPrediction *tmp=*bestCtx;
-		if(tmp->evaluation < ctx->evaluation){
-			bestPredictionFree(tmp);
+		arrPrint(stack,limit);
+		printf(" %lf\n",ctx->evaluation);
+		if((*bestCtx)->evaluation < ctx->evaluation){
+			bestPredictionFree(*bestCtx);
 			*bestCtx=ctx;
 		}else{
 			bestPredictionFree(ctx);
@@ -136,7 +137,7 @@ int bestModel(const double *sample,int numSample,int dimention,void *(**trains)(
 		case EVA_BIC:
 			tmp=1.0/BIC(0.0,0);
 		}
-		printf("tmp:%lf\n",tmp);
+		printf("model %d:%lf\n",i,tmp);
 		if(bestIdx < 0 || max<tmp){
 			max=tmp;
 			bestIdx=i;

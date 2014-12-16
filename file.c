@@ -6,6 +6,12 @@
 
 #include "libstandard.h"
 
+void arrPrint(int *arr,int num){
+	int i;
+	printf("[ ");
+	for(i=0;i<num;i++) printf("%d ",arr[i]);
+	printf(" ]");
+}
 static GSList* __subGetFileList(apr_pool_t *pool,GSList* r,const char *path){
 	DIR *dir;
 	struct dirent *dp;
