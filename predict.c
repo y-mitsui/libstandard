@@ -146,3 +146,35 @@ int bestModel(const double *sample,int numSample,int dimention,void *(**trains)(
 	*bestEva=max;
 	return bestIdx;
 }
+double predict(bestPrediction *ctx,double *targetRange,double *condition){
+	double x,max,idx;
+	
+	for(i=0;i<SRIDE;i++){
+		x=i/SRIDE*(targetRage[1]-targetRange[0])+targetRange[0];
+		variable[0]=x;
+		memcpy(variable,condition);
+		double tmp=bestPrediction(ctx,vairable)/multiIntegrated(targetRange,1,bestPredictionProb,condition);
+		if(i==0 || tmp > max){
+			max=tmp;
+			idx=x;
+		}
+	}
+	return idx;
+	
+}
+void cvSplit(double *testSample,int *numTest,double *trainSample,int *numTrain,const double *original,int numSample,int dimention,double testRate){
+	int test,train,i;
+	
+	test=train=0;
+	for(i=0;i<numSample;i++){
+		if(drand48() < testRate){
+			memcpy(&testSample[test*dimention],&original[test*dimention],sizeof(double)*dimention);
+			test++;
+		}else{
+			memcpy(&trainSample[train*dimention],&original[test*dimention],sizeof(double)*dimention);
+			train++;
+		}
+	}
+	*numTest=test;
+	*numTrain=train;
+}

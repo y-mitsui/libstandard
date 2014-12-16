@@ -7,7 +7,7 @@ typedef struct {
 	gsl_matrix *sigma;
 	int dimention;
 } arg1;
-double func(void *arg,double *x){
+double func(void *arg,const double *x){
 	arg1 *p=arg;
 	int i=0;
 	gsl_vector *data=gsl_vector_alloc(p->dimention);

@@ -29,7 +29,7 @@ void uniqRandum(int *res,int num,int limit){
 typedef struct{
 	int dimention;
 	double *range;
-	double (*func)(void *,double *);
+	double (*func)(void *,const double *);
 	void *arg;
 	double *stack;
 	int rank;
@@ -53,7 +53,7 @@ double __subMultiIntegrate(double x,void *arg){
 		return result;
 	}
 }
-double multiIntegrate(double *range,int dimention,double (*func)(void *,double *x),void *arg){
+double multiIntegrate(double *range,int dimention,double (*func)(void *,const double *x),void *arg){
 	double result,error;
 	size_t neval;
 	ingArg info;

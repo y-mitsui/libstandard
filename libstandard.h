@@ -83,7 +83,7 @@ GSList* getFileList(const char *dir);
 char *trim(char *str);
 
 void uniqRandum(int *res,int num,int limit);
-double multiIntegrate(double *range,int dimention,double (*func)(void *,double *x),void *arg);
+double multiIntegrate(double *range,int dimention,double (*func)(void *,const double *x),void *arg);
 double log_normal_distribution(double x,double u,double sigma);
 
 
@@ -109,6 +109,7 @@ void bestPredictionFree(bestPrediction *ctx);
 void makeDammyData(double *new,const double *old,int numSample,int dimention,int newDimention,const var_info *vars);
 int calcNewDimention(const var_info *vars,int limit);
 bestPrediction *trainFromDB(const char *sql,const char *host,const char *db,const char *user,const char *password,const var_info *vars);
+double bestPredictionProb(bestPrediction *ctx,const double *x);
 
 void arrPrint(int *arr,int num);
 
