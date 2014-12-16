@@ -117,3 +117,10 @@ bestPrediction *bestPredictionModel(const double *sample,int numSample,int dimen
 	r->evaluation=evaluation;
 	return r;
 }
+bestPrediction *trainFromDB(const char *sql,const char *host,const char *db,const char *user,const char *password,const var_info *vars){
+	int numSample,dim;
+	bestPrediction *model;
+	double *sample=samplingFromDB(sql,host,db,user,password,&numSample,&dim);
+	bestFeaturesModel(sample,numSample,dim,vars,&model);
+	return model;
+}

@@ -73,6 +73,7 @@ my_ulonglong std_db_write(MYSQL *conn,const char *table,GHashTable *data);
 dbData* std_db_data(enum DB_DATA_TYPE type,char *data);
 GSList* query_xpath(htmlDocPtr doc,const char *query);
 char *xpathOneContent(apr_pool_t *pool,htmlDocPtr doc,const char *xpath);
+double *samplingFromDB(const char *sql,const char *host,const char *db,const char *user,const char *password,int *numSample,int *dim);
 
 GSList* getFileList(const char *dir);
 
@@ -104,6 +105,7 @@ bestPrediction *bestPredictionModel(const double *sample,int numSample,int dimen
 void bestPredictionFree(bestPrediction *ctx);
 void makeDammyData(double *new,const double *old,int numSample,int dimention,int newDimention,const var_info *vars);
 int calcNewDimention(const var_info *vars,int limit);
+bestPrediction *trainFromDB(const char *sql,const char *host,const char *db,const char *user,const char *password,const var_info *vars);
 
 
 #endif

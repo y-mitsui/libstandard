@@ -91,3 +91,22 @@ my_ulonglong std_db_write(MYSQL *conn,const char *table,GHashTable *data){
 	apr_pool_destroy(pool);
 	return mysql_insert_id(conn);
 }
+double *samplingFromDB(const char *sql,const char *host,const char *db,const char *user,const char *password,int *numSample,int *dim){
+	MYSQL *conn = std_db_open(host,db,user,password);
+	MYSQL_RES *res=std_db_read(conn,sql);
+	int i,j;
+	MYSQL_ROW row;
+	int numRow=mysql_num_rows(res);
+	int numCol=mysql_num_fields(res);
+	double *r=malloc(sizeof(double)*numRow*numCol);
+	
+	for(i=0;i<numRow;i++){
+		row = mysql_fetch_row(res);
+		for(j=0;j<numCol;j++){
+			r[i*numCol+j]=atof(row[j]);
+		}
+	}
+	*numSample=numRow;
+	*dim=numCol;
+	return r;
+}
