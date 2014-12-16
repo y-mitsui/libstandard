@@ -1,3 +1,6 @@
+#ifdef _cplusplus
+extern "C" {
+#endif
 #ifndef LIBSTD_H
 #define LIBSTD_H 1
 
@@ -109,4 +112,7 @@ bestPrediction *trainFromDB(const char *sql,const char *host,const char *db,cons
 
 void arrPrint(int *arr,int num);
 
+#endif
+#ifdef _cplusplus
+}
 #endif
