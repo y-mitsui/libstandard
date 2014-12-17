@@ -48,7 +48,7 @@ static double *newFeatures(const double *sample,int numSample,int dimention,int 
 	return r;
 }
 #define NUM_TEST 10
-static void __subBestModel(const double *sample,int numSample,int dimention,const var_info *vars,int *stack,int limit,int rank,int start,bestPrediction **bestCtx){
+static void __subBestModel(const double *sample,int numSample,int dimention,const var_info *vars,int *stack,int limit,int rank,int start,bestFeatures *bestCtx){
 	//DPGMM *model;
 	int i/*,j*/;
 	double *newData/*,likely=0.0*/;
@@ -62,9 +62,10 @@ static void __subBestModel(const double *sample,int numSample,int dimention,cons
 		bestPrediction *ctx=bestPredictionModel(newData,numSample,dim);
 		arrPrint(stack,limit);
 		printf(" %lf\n",ctx->evaluation);
-		if((*bestCtx)->evaluation < ctx->evaluation){
-			bestPredictionFree(*bestCtx);
-			*bestCtx=ctx;
+		if(bestCtx->ctx->evaluation < ctx->evaluation){
+			bestPredictionFree(bestCtx->ctx);
+			bestCtx->ctx=ctx;
+			memcpy(bestCtx->stack,stack,sizeof(double)*limit);
 		}else{
 			bestPredictionFree(ctx);
 		}
@@ -88,15 +89,16 @@ static void __subBestModel(const double *sample,int numSample,int dimention,cons
 	@return			Success:cross validation likely of best model
 					Fail:nagative
 ******************************************************************************/
-double bestFeaturesModel(const double *sample,int numSample,int dimention,const var_info *vars,bestPrediction **bestModel){
+bestFeatures *bestFeaturesModel(const double *sample,int numSample,int dimention,const var_info *vars){
 	int i,*stack;
+	bestFeatures *r=calloc(1,sizeof(bestFeatures));
+	r->stack=calloc(1,sizeof(int)*(dimention-1));
 	stack=calloc(1,sizeof(int)*(dimention-1));
-	*bestModel=NULL;
 	for(i=0;i<dimention-1;i++){
-		__subBestModel(sample,numSample,dimention,vars,stack,i,0,0,bestModel);
+		__subBestModel(sample,numSample,dimention,vars,stack,i,0,0,r);
 	}
 	free(stack);
-	return (*bestModel)->evaluation;
+	return r;
 }
 
 double crossValidationLikelihood(const double *sample,int numSample,int dimention,void *(*train)(const double *,int,int ),double (*predict)(void *,const double *),void (*modelFree)(void*)){
@@ -146,19 +148,22 @@ int bestModel(const double *sample,int numSample,int dimention,void *(**trains)(
 	*bestEva=max;
 	return bestIdx;
 }
-double predict(bestPrediction *ctx,double *targetRange,double *condition){
+#define SRIDE 1000
+double predict(bestPrediction *ctx,double *targetRange,double *condition,int dimention){
 	double x,max,idx;
-	
+	int i;
+	double *variable=malloc(sizeof(double)*dimention);
+	memcpy(&variable[1],condition,sizeof(double)*(dimention-1));
 	for(i=0;i<SRIDE;i++){
-		x=i/SRIDE*(targetRage[1]-targetRange[0])+targetRange[0];
+		x=(double)i/(double)SRIDE*(targetRange[1]-targetRange[0])+targetRange[0];
 		variable[0]=x;
-		memcpy(variable,condition);
-		double tmp=bestPrediction(ctx,vairable)/multiIntegrated(targetRange,1,bestPredictionProb,condition);
+		double tmp=bestPredictionProb(ctx,variable);
 		if(i==0 || tmp > max){
 			max=tmp;
 			idx=x;
 		}
 	}
+	free(variable);
 	return idx;
 	
 }

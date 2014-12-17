@@ -1,4 +1,4 @@
-#ifdef _cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 #ifndef LIBSTD_H
@@ -51,7 +51,10 @@ typedef struct{
 	void *ctx;
 	double evaluation;
 }bestPrediction;
-
+typedef struct{
+	bestPrediction *ctx;
+	int *stack;
+}bestFeatures;
 typedef struct {
 	int dimention;
 	gsl_vector *u;
@@ -64,7 +67,7 @@ typedef struct{
 	int dimention;
 }Uniform;
 
-double bestFeaturesModel(const double *sample,int numSample,int dimention,const var_info *vars,bestPrediction **bestModel);
+bestFeatures *bestFeaturesModel(const double *sample,int numSample,int dimention,const var_info *vars);
 double crossValidationLikelihood(const double *sample,int numSample,int dimention,void *(*train)(const double *,int,int ),double (*predict)(void *,const double *),void (*modelFree)(void*));
 
 xmlNodePtr xmlNodeGetChild(xmlNodePtr parent,int no);
@@ -106,14 +109,14 @@ double uniformPredict(void *arg,const double *x);
 void uniformFree(void *arg);
 bestPrediction *bestPredictionModel(const double *sample,int numSample,int dimention);
 void bestPredictionFree(bestPrediction *ctx);
-void makeDammyData(double *new,const double *old,int numSample,int dimention,int newDimention,const var_info *vars);
+void makeDammyData(double *newp,const double *old,int numSample,int dimention,int newDimention,const var_info *vars);
 int calcNewDimention(const var_info *vars,int limit);
-bestPrediction *trainFromDB(const char *sql,const char *host,const char *db,const char *user,const char *password,const var_info *vars);
+bestFeatures *trainFromDB(const char *sql,const char *host,const char *db,const char *user,const char *password,const var_info *vars);
 double bestPredictionProb(bestPrediction *ctx,const double *x);
 
 void arrPrint(int *arr,int num);
 
 #endif
-#ifdef _cplusplus
+#ifdef __cplusplus
 }
 #endif
